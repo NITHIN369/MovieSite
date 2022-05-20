@@ -1,24 +1,25 @@
-import logo from './logo.svg';
+import Header from "./components/header/Header.js";
+import Bottomnavigation from "./components/navbar/Navbar.js";
+import {BrowserRouter as Router,Routes,Route} from "react-router-dom";
+import Homepage from "./components/pages/HomePage.js";
+import Movies from "./components/pages/Movies.js";
+import Search from "./components/pages/search.js";
+import Series from "./components/pages/series.js";  
 import './App.css';
-
 function App() {
   return (
+    <Router>
+     <Header />
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Routes>
+      <Route path="/" element={<Homepage />} exact/>
+      <Route path="/movies" element={<Movies />} />
+      <Route path="/series" element={<Series />} />
+      <Route path="/search" element={<Search />} />
+      </Routes>
     </div>
+    <Bottomnavigation></Bottomnavigation>
+    </Router>
   );
 }
 

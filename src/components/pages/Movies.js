@@ -3,18 +3,26 @@ import DisplayItems from "../displayItems/DisplayItems.js";
 import {useEffect,useState} from "react";
 import BottomPagination from "./BottomPagination.js";
 import Chip from '@mui/material/Chip';
+import {Helmet} from "react-helmet"
 function Movies(){
     const [page,setPage]=useState(1);
     const [data,setdata]=useState([]);
     const [pageCount,setpageCount]=useState(10);
     const [generes,setgeneres]=useState([]);
-    const [selectedgeneres,setselectedgeneres]=useState([]);
+    const [selectedgeneres,setselectedgeneres]=useState([]);         
+    const [video,setVideo]=useState("")
     function urlGenere(selectedgen){
         if(selectedgen.length>0){
         const Ids=selectedgen.map(item=>item.id);
         return Ids.reduce((acc,curr)=>acc+","+curr);
         }
         else return "";
+    }
+    async function fetchVideo(id,media_type){
+        const {data}=await axios.get(`https://api.themoviedb.org/3/${media_type}/${id}/videos?api_key=${process.env.REACT_APP_KEY}`)
+        setVideo(data['results'][0]['key'])
+        console.log("video: ",data['results'][0]['key'])
+        window.location.href="https://www.youtube.com/watch?v="+data['results'][0]['key']
     }
     function fetchmovie(){
         axios.get(process.env.REACT_APP_URL+"discover/movie?api_key="+process.env.REACT_APP_KEY+"&page="+page+"&with_genres="+urlGenere(selectedgeneres))
@@ -43,7 +51,7 @@ function Movies(){
             fetchGeneres();
         }
     },[page,selectedgeneres]);
-    return <div>
+    return <div><Helmet><title>🎦Movies</title></Helmet>
     <div className="titleAfterHeader"> <h1>Movies</h1></div>
     <div className="genresBox">
     {selectedgeneres && selectedgeneres.map(item=>
@@ -59,6 +67,9 @@ function Movies(){
       date={item.release_date || item.first_air_date}
       media_type={item.media_type}
       vote_average={item.vote_average}
+      onClick={()=>{
+                     fetchVideo(item.id,"movie")
+                     }}
       />)
       :
       <h1>Sorry No Movies Found</h1>

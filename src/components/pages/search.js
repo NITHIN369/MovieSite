@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import axios from "axios";
 import DisplayItems from "../displayItems/DisplayItems.js";
 import BottomPagination from "./BottomPagination.js";
+import {Helmet} from 'react-helmet';
 function Search(){
     const [value,setvalue]=useState(0);
     const [text,setText]=useState("");
@@ -47,6 +48,7 @@ function Search(){
     function handleChange(event,newvalue){
         setvalue(newvalue);
         setData([])
+        console.log("lates value: ",newvalue)
     }
     useEffect(()=>{
         if(value==0 && text.length>0){
@@ -55,7 +57,7 @@ function Search(){
             fetchSeries();
         }
     },[value,page])
-    return <div>
+    return <div><Helmet><title>🔍Search</title></Helmet>
     <div className="searchBox">
     <TextField  variant="filled" onChange={onChangeHandler} label="Search" />
     <Button variant="contained" onClick={clickHandler}><SearchIcon /></Button>
@@ -74,8 +76,9 @@ function Search(){
       vote_average={item.vote_average}
       />)
       :
-      <h1>Sorry No Movies Found</h1>
-      }
+      value==0 ? <h1>Sorry No Movies Found</h1>
+      : <h1>Sorry No Series Found</h1>
+     }
       </div>
       {data.length>0 && <BottomPagination countpage={pagecount} pageset={setPage}/>}
     </div>
